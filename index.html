@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Odyssey — A Five-Minute Film</title>
+  <meta name="description" content="A five-minute cinematic telling of Homer's Odyssey. Tell me, Muse, of the man of twists and turns." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --gold: #e8d296;
+      --gold-dim: #b9a36a;
+      --ink: #0b0a08;
+      --panel: rgba(12, 10, 8, 0.72);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; background: var(--ink); color: #f3ead4; }
+    body {
+      font-family: Outfit, system-ui, sans-serif;
+      overflow: hidden;
+    }
+    .stage {
+      position: relative;
+      height: 100dvh;
+      width: 100%;
+      overflow: hidden;
+    }
+    .bg {
+      position: absolute; inset: 0;
+      background-size: cover;
+      background-position: center;
+      transform: scale(1.08);
+      transition: background-image 1.1s ease, transform 21s linear;
+      filter: saturate(1.05) contrast(1.05);
+    }
+    .bg.zoom { transform: scale(1.18); }
+    .veil {
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.18) 35%, rgba(0,0,0,.2) 60%, rgba(0,0,0,.78) 100%);
+    }
+    header {
+      position: absolute; top: 0; left: 0; right: 0;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 22px 28px;
+      z-index: 5;
+      letter-spacing: .28em;
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    header a { color: var(--gold); text-decoration: none; opacity: .8; }
+    .frame {
+      position: absolute; inset: 18px;
+      border: 1px solid rgba(232, 210, 150, .22);
+      pointer-events: none;
+      z-index: 4;
+    }
+    .copy {
+      position: absolute; left: 0; right: 0; bottom: 0;
+      z-index: 5;
+      padding: 0 8vw 92px;
+      max-width: 1100px;
+    }
+    .kicker {
+      font-size: 12px;
+      letter-spacing: .32em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 14px;
+    }
+    h1, h2 {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-weight: 600;
+      line-height: .95;
+    }
+    .title-xl {
+      font-size: clamp(56px, 9vw, 128px);
+      color: var(--gold);
+      margin-bottom: 18px;
+    }
+    .chapter-title {
+      font-size: clamp(32px, 5vw, 68px);
+      margin-bottom: 16px;
+    }
+    .prose {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: clamp(18px, 2.1vw, 26px);
+      line-height: 1.45;
+      max-width: 46rem;
+      color: #f7efd8;
+      text-shadow: 0 2px 18px rgba(0,0,0,.7);
+    }
+    .controls {
+      position: absolute; left: 0; right: 0; bottom: 22px;
+      z-index: 6;
+      display: flex; gap: 10px; align-items: center;
+      padding: 0 28px;
+    }
+    button {
+      font-family: Outfit, sans-serif;
+      border: 1px solid rgba(232,210,150,.45);
+      background: rgba(12,10,8,.55);
+      color: var(--gold);
+      padding: 10px 16px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      font-size: 11px;
+      cursor: pointer;
+      border-radius: 999px;
+    }
+    button:hover { background: rgba(232,210,150,.12); }
+    .progress {
+      flex: 1;
+      height: 3px;
+      background: rgba(255,255,255,.15);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .progress > span {
+      display: block; height: 100%; width: 0;
+      background: var(--gold);
+    }
+    .time {
+      font-size: 11px;
+      letter-spacing: .12em;
+      color: var(--gold-dim);
+      min-width: 84px;
+      text-align: right;
+    }
+    .chapters {
+      position: absolute; right: 28px; top: 50%;
+      transform: translateY(-50%);
+      z-index: 6;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .dot {
+      width: 9px; height: 9px; border-radius: 50%;
+      border: 1px solid var(--gold);
+      background: transparent;
+      cursor: pointer;
+    }
+    .dot.on { background: var(--gold); }
+    .credit {
+      margin-top: 14px;
+      font-size: 12px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+    }
+    @media (max-width: 720px) {
+      .chapters { display: none; }
+      .copy { padding: 0 22px 108px; }
+      .frame { inset: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div class="bg" id="bg"></div>
+    <div class="veil"></div>
+    <div class="frame"></div>
+    <header>
+      <span>Homer · The Odyssey</span>
+      <a href="https://github.com/inodeman/the-odyssey-short" target="_blank" rel="noreferrer">Source</a>
+    </header>
+    <div class="copy" id="copy"></div>
+    <div class="chapters" id="dots"></div>
+    <div class="controls">
+      <button id="play" type="button">Play film</button>
+      <button id="prev" type="button">Prev</button>
+      <button id="next" type="button">Next</button>
+      <div class="progress"><span id="bar"></span></div>
+      <div class="time" id="clock">00:00 / 05:00</div>
+    </div>
+  </div>
+  <script>
+    const SCENES = [
+      { t: 0, dur: 8, title: "The Odyssey", kicker: "A five-minute film", text: "Tell me, Muse, of the man of twists and turns.", image: "https://upload.wikimedia.org/wikipedia/commons/4/4d/John_William_Waterhouse_-_Ulysses_and_the_Sirens_%281891%29.jpg" },
+      { t: 8, dur: 21, title: "The wine-dark sea", kicker: "After Troy", text: "He sacked the sacred city, then the long road home became a war of its own. Ten years the siege had lasted. Ten more the sea would keep him.", image: "https://upload.wikimedia.org/wikipedia/commons/8/8b/Ulysses_deriding_Polyphemus.jpg" },
+      { t: 29, dur: 21, title: "A mortal captain", kicker: "Ithaca in mind", text: "He was no god. He was a husband, a father, a captain of tired men. He wanted only the smoke of his own hearth, and the face of Penelope, who waited.", image: "https://upload.wikimedia.org/wikipedia/commons/4/4f/Trireme.jpg" },
+      { t: 50, dur: 21, title: "The cave", kicker: "Polyphemus", text: "A giant with one terrible eye trapped them and ate them. Odysseus gave him wine, then drove a fire-hardened stake into that single eye.", image: "https://upload.wikimedia.org/wikipedia/commons/6/6a/Jordaens_Odysseus_in_the_Cave_of_Polyphemus.jpg" },
+      { t: 71, dur: 21, title: "A name shouted", kicker: "Pride", text: "They escaped beneath the rams. Then pride undid the victory. He shouted his true name, and the wounded giant called his father. The ocean itself became an enemy.", image: "https://upload.wikimedia.org/wikipedia/commons/1/15/Guido_Reni_-_Polyphemus.jpg" },
+      { t: 92, dur: 21, title: "Circe", kicker: "Aeaea", text: "The sorceress turned the crew to swine. Hermes gave Odysseus a charm. He made her swear an oath, and from her learned the price of the road still waiting.", image: "https://upload.wikimedia.org/wikipedia/commons/9/99/Circe_Offering_the_Cup_to_Odysseus.jpg" },
+      { t: 113, dur: 21, title: "The dead", kicker: "Tiresias", text: "At the edge of the world he poured dark blood for the shades. The prophet spoke: if the men harm the cattle of the Sun they die. If he reaches home, he must win his life a second time.", image: "https://upload.wikimedia.org/wikipedia/commons/6/6a/Bouguereau-Dante_and_Virgil.jpg" },
+      { t: 134, dur: 21, title: "The Sirens", kicker: "Knowledge without ruin", text: "He filled his sailors' ears with wax and lashed himself to the mast. He alone heard the song that promised every secret. The ropes held. The ship passed.", image: "https://upload.wikimedia.org/wikipedia/commons/4/4d/John_William_Waterhouse_-_Ulysses_and_the_Sirens_%281891%29.jpg" },
+      { t: 155, dur: 21, title: "The strait", kicker: "Scylla and Charybdis", text: "He chose the lesser death. Six men were taken from the benches. The rest of the ship lived. A captain's math. A wound that never closed.", image: "https://upload.wikimedia.org/wikipedia/commons/8/8b/Ulysses_deriding_Polyphemus.jpg" },
+      { t: 176, dur: 21, title: "Ogygia", kicker: "Calypso", text: "She offered immortality. For seven years she kept him. Every day he stared at the empty horizon, weeping for a mortal life, and then he built a raft with his own hands.", image: "https://upload.wikimedia.org/wikipedia/commons/2/2e/Arnold_Boecklin_-_Odysseus_and_Calypso.jpg" },
+      { t: 197, dur: 21, title: "Ithaca", kicker: "Unrecognized", text: "The Phaeacians carried him home while he slept. Athena cloaked him as a beggar so he could walk into his own hall unseen.", image: "https://upload.wikimedia.org/wikipedia/commons/4/4c/Ithaka_Vathy.jpg" },
+      { t: 218, dur: 21, title: "The shroud", kicker: "Penelope", text: "Suitors drank his wine. She held them off with a shroud woven by day and unraveled by night. Twenty years. Still she would not choose.", image: "https://upload.wikimedia.org/wikipedia/commons/a/ab/John_William_Waterhouse_-_Penelope_and_the_Suitors.jpg" },
+      { t: 239, dur: 21, title: "The bow", kicker: "Homecoming", text: "String the great bow, and shoot through twelve axe-heads. The beggar asked to try. The string sang like a swallow. The arrow flew true.", image: "https://upload.wikimedia.org/wikipedia/commons/6/62/Thomas_Degeorge_Ulysse.jpg" },
+      { t: 260, dur: 40, title: "Ithaca", kicker: "From the poem of Homer", text: "The wanderer was a husband again. Ithaca was never a map. It was a promise he would not betray. And the sea gave him back.", image: "https://upload.wikimedia.org/wikipedia/commons/2/2e/Arnold_Boecklin_-_Odysseus_and_Calypso.jpg" }
+    ];
+    const FALLBACK = "linear-gradient(160deg,#1a140c,#0b0a08 55%,#24180c)";
+    const bg = document.getElementById("bg");
+    const copy = document.getElementById("copy");
+    const dots = document.getElementById("dots");
+    const bar = document.getElementById("bar");
+    const clock = document.getElementById("clock");
+    const playBtn = document.getElementById("play");
+    let index = 0, playing = false, startedAt = 0, elapsed = 0, raf = 0;
+    const TOTAL = 300;
+    function pad(n){ return String(n).padStart(2,"0"); }
+    function fmt(s){ s = Math.max(0, Math.min(TOTAL, s|0)); return pad((s/60)|0) + ":" + pad(s%60); }
+    function sceneAt(t){
+      for (let i = SCENES.length - 1; i >= 0; i--) if (t >= SCENES[i].t) return i;
+      return 0;
+    }
+    function render(i, withZoom){
+      const s = SCENES[i];
+      index = i;
+      bg.classList.remove("zoom");
+      void bg.offsetWidth;
+      bg.style.backgroundImage = `url("${s.image}"), ${FALLBACK}`;
+      if (withZoom) requestAnimationFrame(() => bg.classList.add("zoom"));
+      copy.innerHTML = `
+        <div class="kicker">${s.kicker}</div>
+        <h2 class="${i===0||i===SCENES.length-1 ? "title-xl" : "chapter-title"}">${s.title}</h2>
+        <p class="prose">${s.text}</p>
+        ${i===0 ? '<p class="credit">Play to run the five-minute cut</p>' : ""}
+      `;
+      [...dots.children].forEach((d, n) => d.classList.toggle("on", n === i));
+    }
+    SCENES.forEach((_, i) => {
+      const b = document.createElement("button");
+      b.className = "dot" + (i===0 ? " on" : "");
+      b.type = "button";
+      b.title = SCENES[i].title;
+      b.onclick = () => { elapsed = SCENES[i].t; startedAt = performance.now() - elapsed*1000; render(i, true); };
+      dots.appendChild(b);
+    });
+    function tick(now){
+      if (!playing) return;
+      elapsed = (now - startedAt) / 1000;
+      if (elapsed >= TOTAL){
+        elapsed = TOTAL;
+        playing = false;
+        playBtn.textContent = "Play film";
+      }
+      const i = sceneAt(elapsed);
+      if (i !== index) render(i, true);
+      bar.style.width = (elapsed / TOTAL * 100) + "%";
+      clock.textContent = fmt(elapsed) + " / 05:00";
+      if (playing) raf = requestAnimationFrame(tick);
+    }
+    playBtn.onclick = () => {
+      playing = !playing;
+      playBtn.textContent = playing ? "Pause" : "Play film";
+      if (playing){
+        if (elapsed >= TOTAL) elapsed = 0;
+        startedAt = performance.now() - elapsed*1000;
+        render(sceneAt(elapsed), true);
+        raf = requestAnimationFrame(tick);
+      } else {
+        cancelAnimationFrame(raf);
+      }
+    };
+    document.getElementById("prev").onclick = () => {
+      const i = Math.max(0, index-1);
+      elapsed = SCENES[i].t;
+      startedAt = performance.now() - elapsed*1000;
+      render(i, true);
+    };
+    document.getElementById("next").onclick = () => {
+      const i = Math.min(SCENES.length-1, index+1);
+      elapsed = SCENES[i].t;
+      startedAt = performance.now() - elapsed*1000;
+      render(i, true);
+    };
+    render(0, false);
+  </script>
+</body>
+</html>
